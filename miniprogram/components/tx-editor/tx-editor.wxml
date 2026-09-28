@@ -1,0 +1,43 @@
+<view wx:if="{{rendered}}" class="root {{in ? 'in' : ''}}">
+  <view class="mask" bindtap="onClose"></view>
+
+  <view class="sheet" catchtap="noop">
+    <view class="grabber"></view>
+
+    <view class="head">
+      <text class="title">{{isEdit ? '编辑收支' : '记一笔'}}</text>
+      <text class="date">{{dateLabel}}</text>
+    </view>
+
+    <view class="types">
+      <view class="type t-EXPENSE {{type === 'EXPENSE' ? 'on' : ''}}" data-type="EXPENSE" bindtap="pickType">支出</view>
+      <view class="type t-INCOME {{type === 'INCOME' ? 'on' : ''}}" data-type="INCOME" bindtap="pickType">收入</view>
+    </view>
+
+    <view class="amount {{type === 'INCOME' ? 'income' : 'expense'}}">
+      <text class="cny">¥</text>
+      <input class="amount-input"
+             type="digit"
+             value="{{amount}}"
+             placeholder="0.00"
+             placeholder-class="ph"
+             bindinput="onAmount"></input>
+    </view>
+
+    <view class="remark-row">
+      <text class="remark-label">备注</text>
+      <input class="remark"
+             value="{{remark}}"
+             placeholder="午饭 / 打车 / 工资…"
+             placeholder-class="ph"
+             maxlength="200"
+             bindinput="onRemark"></input>
+    </view>
+
+    <view class="actions">
+      <view class="btn ghost" wx:if="{{isEdit}}" bindtap="onDelete">删除</view>
+      <view class="btn ghost" wx:else bindtap="onClose">取消</view>
+      <view class="btn primary {{busy ? 'busy' : ''}}" bindtap="onSubmit">{{busy ? '保存中' : '保存'}}</view>
+    </view>
+  </view>
+</view>

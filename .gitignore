@@ -1,0 +1,66 @@
+# 日期手账 —— Java 后端 + Python 分析服务 + 微信小程序，三类产物都要挡
+# 说明：以 '/' 结尾表示只匹配目录；模式在任意层级生效，所以 backend/target、
+# backend/.venv、backend/.idea 都会被同一条规则覆盖。
+
+### 构建产物 ###
+target/
+build/
+dist/
+nbdist/
+nbbuild/
+node_modules/
+
+### Python（backend/.venv 有 121MB，绝不能提交）###
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+uv.lock
+
+### 微信开发者工具 ###
+# project.config.json 是团队共享配置，要提交；
+# project.private.config.json 是每个人自己的本地覆盖，不提交。
+project.private.config.json
+miniprogram_npm/
+
+### IDE ###
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.apt_generated
+.classpath
+.factorypath
+.project
+.springBeans
+.sts4-cache
+nbproject/private/
+.nb-gradle/
+
+### 密钥与本地配置 ###
+.env
+.env.*
+!.env.example
+application-local.yml
+secrets.properties
+
+### 日志 ###
+*.log
+logs/
+
+### 系统与编辑器临时文件 ###
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.tmp
+*.bak
+*.swp
+*~

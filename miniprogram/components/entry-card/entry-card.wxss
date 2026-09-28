@@ -1,0 +1,143 @@
+.card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 28rpx rgba(28, 27, 26, 0.05);
+}
+
+.card:active {
+  transform: scale(0.99);
+}
+
+.rail {
+  width: 8rpx;
+  flex-shrink: 0;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 24rpx 28rpx 20rpx;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.chip {
+  font-size: 22rpx;
+  line-height: 34rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
+}
+
+.time {
+  font-size: 22rpx;
+  color: #a3a09b;
+  letter-spacing: 1rpx;
+}
+
+.content {
+  font-size: 29rpx;
+  color: #2b2a27;
+  line-height: 46rpx;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.masked {
+  display: flex;
+  align-items: center;
+  min-height: 46rpx;
+}
+
+.masked-text {
+  flex: 1;
+  font-size: 27rpx;
+  color: #a3a09b;
+  margin-left: 14rpx;
+}
+
+.lock {
+  position: relative;
+  width: 22rpx;
+  height: 17rpx;
+  border: 2rpx solid currentColor;
+  border-radius: 5rpx;
+  color: #7c4dff;
+}
+
+.lock::after {
+  content: '';
+  position: absolute;
+  left: 3rpx;
+  top: -10rpx;
+  width: 12rpx;
+  height: 12rpx;
+  border: 2rpx solid currentColor;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  margin-top: 12rpx;
+}
+
+.link {
+  font-size: 24rpx;
+  padding: 8rpx 0;
+}
+
+.cat-WORK .rail,
+.cat-WORK .chip {
+  background: #2f6bff;
+}
+
+.cat-WORK .chip {
+  color: #ffffff;
+}
+
+.cat-WORK .link {
+  color: #2f6bff;
+}
+
+.cat-DIARY .rail,
+.cat-DIARY .chip {
+  background: #e8890c;
+}
+
+.cat-DIARY .chip {
+  color: #ffffff;
+}
+
+.cat-DIARY .link {
+  color: #e8890c;
+}
+
+.cat-SECRET .rail,
+.cat-SECRET .chip {
+  background: #7c4dff;
+}
+
+.cat-SECRET .chip {
+  color: #ffffff;
+}
+
+.cat-SECRET .link {
+  color: #7c4dff;
+}

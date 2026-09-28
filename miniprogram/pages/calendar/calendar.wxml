@@ -1,0 +1,61 @@
+<view class="page">
+  <view class="panel">
+    <view class="panel-head">
+      <view class="arrow" bindtap="onPrevMonth"><view class="chev"></view></view>
+      <text class="mlabel">{{monthLabel}}</text>
+      <view class="arrow" bindtap="onNextMonth"><view class="chev right"></view></view>
+      <view class="today-btn" bindtap="backToday">回到今天</view>
+    </view>
+
+    <view class="week-row">
+      <text class="wd" wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
+    </view>
+
+    <view class="grid">
+      <view wx:for="{{cells}}" wx:key="key"
+            class="cell {{item.blank ? 'blank' : ''}} {{item.isSel ? 'sel' : ''}} {{item.isToday ? 'td' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="onSelect">
+        <view class="nb"><text class="n">{{item.day}}</text></view>
+        <view class="dots">
+          <view class="md m-{{mk}}" wx:for="{{item.marks}}" wx:for-item="mk" wx:key="*this"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="legend">
+      <view class="lg"><view class="md m-WORK"></view><text>工作</text></view>
+      <view class="lg"><view class="md m-DIARY"></view><text>日记</text></view>
+      <view class="lg"><view class="md m-SECRET"></view><text>心事</text></view>
+    </view>
+  </view>
+
+  <view class="section-head">
+    <text class="section-title">{{selectedLabel}}</text>
+    <text class="section-sub" wx:if="{{!loading}}">{{entries.length}} 条记录</text>
+  </view>
+
+  <view class="list" wx:if="{{loading && !entries.length}}">
+    <view class="sk"></view>
+  </view>
+
+  <view class="list" wx:elif="{{entries.length}}">
+    <entry-card wx:for="{{entries}}" wx:key="id" entry="{{item}}" bind:select="onCardTap" />
+  </view>
+
+  <view class="day-empty" wx:elif="{{!loading}}">这一天还没有记录，点右下角补上</view>
+
+  <view class="fab" bindtap="openAdd">
+    <view class="plus"><view class="ph-h"></view><view class="ph-v"></view></view>
+  </view>
+
+  <entry-editor show="{{sheetShow}}"
+                entry="{{sheetEntry}}"
+                date-label="{{dateLabel}}"
+                busy="{{busy}}"
+                bind:submit="onSheetSubmit"
+                bind:delete="onSheetDelete"
+                bind:close="closeSheet" />
+
+  <bottom-nav active="calendar" />
+</view>

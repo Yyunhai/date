@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="hero">
+    <view class="deco d1"></view>
+    <view class="deco d2"></view>
+
+    <view class="hero-top">
+      <text class="tag">今天</text>
+      <text class="month">{{monthYear}}</text>
+    </view>
+
+    <view class="hero-main">
+      <text class="day">{{dayNum}}</text>
+      <view class="hero-side">
+        <text class="week">{{weekday}}</text>
+        <text class="lead">{{loading ? '正在读取' : (entries.length ? '已记录 ' + entries.length + ' 条' : '还是空白的一天')}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-head">
+    <text class="section-title">当天的记录</text>
+    <text class="section-sub">点卡片可修改</text>
+  </view>
+
+  <view class="list" wx:if="{{loading && !entries.length}}">
+    <view class="sk"></view>
+    <view class="sk"></view>
+  </view>
+
+  <view class="list" wx:elif="{{entries.length}}">
+    <entry-card wx:for="{{entries}}" wx:key="id" entry="{{item}}" bind:select="onCardTap" />
+  </view>
+
+  <view class="empty" wx:elif="{{!loading}}">
+    <view class="empty-ring"></view>
+    <text class="empty-title">今天还没有写下任何内容</text>
+    <text class="empty-desc">工作、日记，或者一句不想让别人看到的心事</text>
+    <view class="empty-btn" bindtap="openAdd">写第一条</view>
+  </view>
+
+  <view class="fab" bindtap="openAdd">
+    <view class="plus"><view class="ph-h"></view><view class="ph-v"></view></view>
+  </view>
+
+  <entry-editor show="{{sheetShow}}"
+                entry="{{sheetEntry}}"
+                date-label="{{dateLabel}}"
+                busy="{{busy}}"
+                bind:submit="onSheetSubmit"
+                bind:delete="onSheetDelete"
+                bind:close="closeSheet" />
+
+  <bottom-nav active="index" />
+</view>

@@ -1,0 +1,110 @@
+page {
+  background: #f5f4f1;
+  color: #1c1b1a;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+view,
+text,
+button,
+textarea {
+  box-sizing: border-box;
+}
+
+button::after {
+  border: none;
+}
+
+/* 两个页面共用的列表区块 */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 46rpx 34rpx 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1c1b1a;
+}
+
+.section-sub {
+  font-size: 22rpx;
+  color: #a8a49e;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 0 28rpx;
+}
+
+.sk {
+  height: 170rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(90deg, #eeedea 25%, #f7f6f3 50%, #eeedea 75%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+/* 两个页面共用的悬浮添加按钮 */
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(170rpx + env(safe-area-inset-bottom));
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #5b6cff, #7c4dff);
+  box-shadow: 0 18rpx 36rpx rgba(76, 84, 220, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.fab:active {
+  transform: scale(0.9);
+}
+
+.plus {
+  position: relative;
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.ph-h,
+.ph-v {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 6rpx;
+}
+
+.ph-h {
+  left: 0;
+  top: 19rpx;
+  width: 44rpx;
+  height: 6rpx;
+}
+
+.ph-v {
+  top: 0;
+  left: 19rpx;
+  width: 6rpx;
+  height: 44rpx;
+}

@@ -1,0 +1,95 @@
+<view class="page">
+  <view class="tabs">
+    <view class="seg">
+      <view class="seg-item {{screen === 0 ? 'on' : ''}}" data-index="0" bindtap="switchScreen">记账</view>
+      <view class="seg-item {{screen === 1 ? 'on' : ''}}" data-index="1" bindtap="switchScreen">分析</view>
+    </view>
+  </view>
+
+  <view class="screens {{dragging ? 'dragging' : ''}}"
+        style="transform: translateX({{trackX}}px);"
+        bindtouchstart="onSwipeStart"
+        bindtouchmove="onSwipeMove"
+        bindtouchend="onSwipeEnd"
+        bindtouchcancel="onSwipeEnd">
+
+    <view class="slide">
+      <view class="hero">
+        <view class="deco d1"></view>
+        <view class="deco d2"></view>
+
+        <view class="hero-top">
+          <text class="tag">{{dateLabel}}</text>
+          <text class="week">{{weekday}}</text>
+        </view>
+
+        <text class="h-label">本日结余</text>
+        <text class="h-balance">{{balance}}</text>
+
+        <view class="h-row">
+          <view class="h-cell">
+            <text class="h-k">收入</text>
+            <text class="h-v">{{income}}</text>
+          </view>
+          <view class="h-div"></view>
+          <view class="h-cell">
+            <text class="h-k">支出</text>
+            <text class="h-v">{{expense}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-head">
+        <text class="section-title">当天的流水</text>
+        <text class="section-sub" wx:if="{{!loading}}">{{items.length}} 笔</text>
+      </view>
+
+      <view class="list" wx:if="{{loading && !items.length}}">
+        <view class="sk"></view>
+      </view>
+
+      <view class="list" wx:elif="{{items.length}}">
+        <view class="row" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="onItemTap">
+          <view class="r-left">
+            <view class="r-tag {{item.type === 'INCOME' ? 'income' : 'expense'}}">{{item.type === 'INCOME' ? '收' : '支'}}</view>
+            <view class="r-text">
+              <text class="r-remark">{{item.remark}}</text>
+              <text class="r-time">{{item.time}}</text>
+            </view>
+          </view>
+          <text class="r-amount {{item.type === 'INCOME' ? 'income' : 'expense'}}">{{item.sign}}{{item.amountText}}</text>
+        </view>
+      </view>
+
+      <view class="empty" wx:elif="{{!loading}}">
+        <view class="empty-ring"></view>
+        <text class="empty-title">今天还没有记账</text>
+        <text class="empty-desc">一笔收入或支出都可以记下来</text>
+        <view class="empty-btn" bindtap="openAdd">记第一笔</view>
+      </view>
+
+      <view class="swipe-cue" data-index="1" bindtap="switchScreen">
+        <text>左滑查看每周 / 每月 / 每年分析</text>
+        <text class="cue-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="slide">
+      <analysis-panel id="analysis-panel" date="{{date}}" show="{{screen === 1}}" />
+    </view>
+  </view>
+
+  <view class="fab" wx:if="{{screen === 0}}" bindtap="openAdd">
+    <view class="plus"><view class="ph-h"></view><view class="ph-v"></view></view>
+  </view>
+
+  <tx-editor show="{{sheetShow}}"
+             item="{{sheetItem}}"
+             date-label="{{dateLabel}}"
+             busy="{{busy}}"
+             bind:submit="onSheetSubmit"
+             bind:delete="onSheetDelete"
+             bind:close="closeSheet" />
+
+  <bottom-nav active="finance" />
+</view>

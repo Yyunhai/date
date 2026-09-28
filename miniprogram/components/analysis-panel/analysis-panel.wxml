@@ -1,0 +1,78 @@
+<view class="panel">
+  <view class="seg">
+    <view wx:for="{{granularities}}" wx:key="key"
+          class="seg-item {{granularity === item.key ? 'on' : ''}}"
+          data-key="{{item.key}}" bindtap="pickGranularity">{{item.label}}</view>
+  </view>
+
+  <view class="range-line">
+    <text class="range">{{rangeLabel}}</text>
+    <text class="range-count" wx:if="{{loaded && !failed}}">{{recordCount}} 笔记录</text>
+  </view>
+
+  <view class="sum">
+    <view class="sum-cell">
+      <text class="k">收入</text>
+      <text class="v">{{totals.income}}</text>
+      <text class="d good" wx:if="{{change.income}}">{{change.incomeUp ? '↑' : '↓'}} {{change.income}}</text>
+      <text class="d muted" wx:elif="{{change.incomeNew}}">较{{pastName}}新增</text>
+      <text class="d muted" wx:else>持平</text>
+    </view>
+    <view class="sum-cell">
+      <text class="k">支出</text>
+      <text class="v">{{totals.expense}}</text>
+      <text class="d bad" wx:if="{{change.expense}}">{{change.expenseUp ? '↑' : '↓'}} {{change.expense}}</text>
+      <text class="d muted" wx:elif="{{change.expenseNew}}">较{{pastName}}新增</text>
+      <text class="d muted" wx:else>持平</text>
+    </view>
+    <view class="sum-cell">
+      <text class="k">结余</text>
+      <text class="v">{{totals.balance}}</text>
+      <text class="d muted">{{change.balance}} {{pastName}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">
+      <text class="card-title">收支分布</text>
+      <text class="card-sub">峰值 {{maxLabel}}</text>
+    </view>
+
+    <view class="chart">
+      <view class="col" wx:for="{{buckets}}" wx:key="index">
+        <view class="bars">
+          <view class="bar inc" style="height:{{item.incomeH}}%"></view>
+          <view class="bar exp" style="height:{{item.expenseH}}%"></view>
+        </view>
+        <text class="tick">{{item.tick ? item.label : ''}}</text>
+      </view>
+    </view>
+
+    <view class="legend">
+      <view class="lg"><view class="sw inc"></view><text>收入</text></view>
+      <view class="lg"><view class="sw exp"></view><text>支出</text></view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{topExpenses.length}}">
+    <view class="card-head">
+      <text class="card-title">支出构成</text>
+      <text class="card-sub">前 {{topExpenses.length}} 项</text>
+    </view>
+    <view class="top-row" wx:for="{{topExpenses}}" wx:key="remark">
+      <view class="top-line">
+        <text class="top-name">{{item.remark}}</text>
+        <text class="top-val">{{item.total}}</text>
+      </view>
+      <view class="track"><view class="fill" style="width:{{item.width}}%"></view></view>
+      <text class="top-sub">{{item.count}} 笔 · 占比 {{item.share}}%</text>
+    </view>
+  </view>
+
+  <view class="state" wx:if="{{loading}}">正在统计…</view>
+  <view class="state" wx:elif="{{failed}}">
+    <text>读不到分析服务，确认 8081 已启动</text>
+    <view class="retry" bindtap="reload">重试</view>
+  </view>
+  <view class="state" wx:elif="{{loaded && !hasData}}">{{scopeName}}还没有记账，滑到左边先记一笔</view>
+</view>

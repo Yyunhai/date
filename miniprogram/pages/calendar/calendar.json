@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "日历",
+  "backgroundColor": "#f5f4f1",
+  "usingComponents": {
+    "entry-card": "/components/entry-card/entry-card",
+    "entry-editor": "/components/entry-editor/entry-editor",
+    "bottom-nav": "/components/bottom-nav/bottom-nav"
+  }
+}

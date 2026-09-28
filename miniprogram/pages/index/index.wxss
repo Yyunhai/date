@@ -1,0 +1,138 @@
+.page {
+  min-height: 100vh;
+  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin: 20rpx 28rpx 0;
+  padding: 40rpx 44rpx 44rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(140deg, #5b6cff 0%, #7c4dff 58%, #a855f7 100%);
+  box-shadow: 0 24rpx 52rpx rgba(91, 108, 255, 0.3);
+}
+
+.deco {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.d1 {
+  width: 300rpx;
+  height: 300rpx;
+  top: -120rpx;
+  right: -80rpx;
+}
+
+.d2 {
+  width: 180rpx;
+  height: 180rpx;
+  bottom: -80rpx;
+  left: 40rpx;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tag {
+  padding: 6rpx 22rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 22rpx;
+  letter-spacing: 4rpx;
+}
+
+.month {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 26rpx;
+  letter-spacing: 1rpx;
+}
+
+.hero-main {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 28rpx;
+  margin-top: 26rpx;
+}
+
+.day {
+  color: #ffffff;
+  font-size: 150rpx;
+  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -6rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-side {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 18rpx;
+}
+
+.week {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 31rpx;
+  font-weight: 500;
+}
+
+.lead {
+  margin-top: 10rpx;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 24rpx;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40rpx 28rpx;
+  padding: 84rpx 40rpx 70rpx;
+  border: 2rpx dashed #dcd8d1;
+  border-radius: 36rpx;
+}
+
+.empty-ring {
+  width: 96rpx;
+  height: 96rpx;
+  margin-bottom: 30rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(91, 108, 255, 0.14), rgba(124, 77, 255, 0.14));
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #4a4744;
+}
+
+.empty-desc {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #a8a49e;
+}
+
+.empty-btn {
+  margin-top: 40rpx;
+  padding: 0 46rpx;
+  height: 78rpx;
+  line-height: 78rpx;
+  border-radius: 999rpx;
+  color: #ffffff;
+  font-size: 28rpx;
+  background: linear-gradient(135deg, #5b6cff, #7c4dff);
+  box-shadow: 0 12rpx 26rpx rgba(91, 108, 255, 0.3);
+}
+
+.empty-btn:active {
+  opacity: 0.85;
+}

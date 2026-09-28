@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/finance/finance",
+    "pages/calendar/calendar"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#F5F4F1",
+    "navigationBarBackgroundColor": "#F5F4F1",
+    "navigationBarTitleText": "今天",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

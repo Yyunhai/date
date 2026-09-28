@@ -1,0 +1,8 @@
+<view class="bar">
+  <view wx:for="{{items}}" wx:key="page"
+        class="item {{active === item.page ? 'on' : ''}}"
+        data-page="{{item.page}}" data-url="{{item.url}}" bindtap="onGo">
+    <image class="ic" src="{{active === item.page ? item.on : item.off}}" />
+    <text class="label">{{item.label}}</text>
+  </view>
+</view>

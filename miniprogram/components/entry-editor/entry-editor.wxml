@@ -1,0 +1,40 @@
+<view wx:if="{{rendered}}" class="root {{in ? 'in' : ''}}">
+  <view class="mask" bindtap="onClose"></view>
+
+  <view class="sheet" catchtap="noop">
+    <view class="grabber"></view>
+
+    <view class="head">
+      <text class="title">{{isEdit ? '编辑记录' : '记录此刻'}}</text>
+      <text class="date">{{dateLabel}}</text>
+    </view>
+
+    <view class="cats">
+      <view wx:for="{{categories}}" wx:key="key"
+            class="cat c-{{item.key}} {{category === item.key ? 'on' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="pickCategory">{{item.label}}</view>
+    </view>
+
+    <textarea class="input"
+              value="{{content}}"
+              placeholder="{{placeholder}}"
+              placeholder-class="ph"
+              maxlength="5000"
+              show-confirm-bar="{{false}}"
+              cursor-spacing="40"
+              bindinput="onInput"></textarea>
+
+    <view class="meta">
+      <text class="hint" wx:if="{{category === 'SECRET'}}">心事在列表中默认折叠，点开才显示正文</text>
+      <text class="hint" wx:else> </text>
+      <text class="count">{{content.length}}/5000</text>
+    </view>
+
+    <view class="actions">
+      <view class="btn ghost" wx:if="{{isEdit}}" bindtap="onDelete">删除</view>
+      <view class="btn ghost" wx:else bindtap="onClose">取消</view>
+      <view class="btn primary {{busy ? 'busy' : ''}}" bindtap="onSubmit">{{busy ? '保存中' : '保存'}}</view>
+    </view>
+  </view>
+</view>

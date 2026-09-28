@@ -1,0 +1,10 @@
+# 本地数据库账号模板。
+# 用法：复制成同目录的 application-local.yml 并填入自己的密码；
+# application-local.yml 已经被 .gitignore 忽略，不会被提交。
+# 少了这个文件，后端会以「Access denied for user 'root'@'localhost' (using password: NO)」启动失败。
+spring:
+  datasource:
+    username: root
+    password: 改成你的MySQL密码
+    # 需要换库时可以在这里一起覆盖，例如：
+    # url: jdbc:mysql://127.0.0.1:3306/date_app?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
