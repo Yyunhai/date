@@ -125,21 +125,3 @@ python analysis/app.py        # 监听 127.0.0.1:8081
 免登录单用户模式，所有记录挂在 `app.user-id`（默认 1）下。`daily_entry` 字段：`id / user_id / entry_date / category / content(text) / created_at / updated_at`，`(user_id, entry_date)` 建索引。
 
 工时单独一张表 `daily_work_log`：`id / user_id / work_date / minutes / created_at / updated_at`，`(user_id, work_date)` 建唯一约束，一天最多一行。`ddl-auto: update` 只会加表不会删列，早先挂在 `daily_entry` 上的 `duration_minutes` 如果已经建出来了会留一个空的孤儿列，想清掉就手动执行 `ALTER TABLE daily_entry DROP COLUMN duration_minutes;`。
-
-## 提交与忽略规则
-
-根目录 `.gitignore` 已经按三类产物写好，实测过：
-
-- 构建 / 依赖：`target/`、`node_modules/`、`build/`、`dist/`。
-- Python：`backend/.venv`（121MB）、`__pycache__/`、`*.pyc`、各种缓存、`uv.lock`。
-- 微信开发者工具：`project.private.config.json`（每人自己的本地覆盖，不提交）；`project.config.json` 是共享配置，要提交。
-- IDE：`.idea/`、`*.iml`、`.vscode/` 等。
-- 密钥：`.env`、`application-local.yml`。上面两个模板（`.env.example`、`application-local.example.yml`）是提交进仓库的。
-- 日志与系统临时文件：`*.log`、`.DS_Store`、`Thumbs.db`、`*.tmp` 等。
-
-`git init` 之后建议先确认一遍再提交：
-
-```bash
-git status --short          # 不该出现 target/、.venv/、.env
-git check-ignore -v backend/.venv backend/.env backend/src/main/resources/application-local.yml
-```
