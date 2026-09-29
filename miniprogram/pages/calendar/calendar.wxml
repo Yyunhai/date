@@ -26,7 +26,6 @@
     <view class="legend">
       <view class="lg"><view class="md m-WORK"></view><text>工作</text></view>
       <view class="lg"><view class="md m-DIARY"></view><text>日记</text></view>
-      <view class="lg"><view class="md m-SECRET"></view><text>心事</text></view>
     </view>
   </view>
 
@@ -57,5 +56,4 @@
                 bind:delete="onSheetDelete"
                 bind:close="closeSheet" />
 
-  <bottom-nav active="calendar" />
 </view>

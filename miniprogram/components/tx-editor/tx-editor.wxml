@@ -1,4 +1,4 @@
-<view wx:if="{{rendered}}" class="root {{in ? 'in' : ''}}">
+<view wx:if="{{rendered}}" class="root {{closing ? 'closing' : ''}}">
   <view class="mask" bindtap="onClose"></view>
 
   <view class="sheet" catchtap="noop">

@@ -73,6 +73,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+.v-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
+}
+
+.u {
+  font-size: 20rpx;
+  color: #a8a49e;
+}
+
 .d {
   font-size: 20rpx;
 }
@@ -150,6 +161,16 @@
   background: linear-gradient(180deg, #f37b7f, #e5484d);
 }
 
+/* 工时一格只有一根柱子，比收支那两根粗些才好看 */
+.bar.dur {
+  width: 14rpx;
+  background: linear-gradient(180deg, #7c8bff, #4a58d8);
+}
+
+.bar.dur.wk {
+  background: linear-gradient(180deg, #ffc46b, #f5910d);
+}
+
 .tick {
   height: 34rpx;
   line-height: 34rpx;
@@ -185,6 +206,18 @@
 
 .sw.exp {
   background: #e5484d;
+}
+
+.sw.dur {
+  background: #4a58d8;
+}
+
+.sw.wk {
+  background: #f5910d;
+}
+
+.fill.wk {
+  background: linear-gradient(90deg, #f5b04a, #f5910d);
 }
 
 .top-row {

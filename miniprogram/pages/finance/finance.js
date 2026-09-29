@@ -15,6 +15,7 @@ Page({
     date: '',
     dateLabel: '',
     weekday: '',
+    isToday: true,
     items: [],
     income: '0.00',
     expense: '0.00',
@@ -35,11 +36,47 @@ Page({
       date: today,
       dateLabel: dateUtil.friendlyLabel(today),
       weekday: dateUtil.weekdayLabel(today),
+      isToday: true,
       winWidth: windowWidth()
     });
   },
 
+  setDate(key) {
+    if (!key || key === this.data.date) return;
+    this.setData({
+      date: key,
+      dateLabel: dateUtil.friendlyLabel(key),
+      weekday: dateUtil.weekdayLabel(key),
+      isToday: dateUtil.dayDiffFromToday(key) === 0,
+      items: [] // 换天先清空，避免上一天的流水残留
+    });
+    this.load();
+  },
+
+  onPrevDay() {
+    this.setDate(dateUtil.shiftDay(this.data.date, -1));
+  },
+
+  onNextDay() {
+    this.setDate(dateUtil.shiftDay(this.data.date, 1));
+  },
+
+  backToday() {
+    this.setDate(dateUtil.todayKey());
+  },
+
+  onPickDate(e) {
+    this.setDate(e.detail.value);
+  },
+
   onShow() {
+    const bar = this.getTabBar && this.getTabBar();
+    if (bar) bar.setData({ active: 'finance' });
+    // 页面常驻后跨过午夜不会重新 onLoad，setDate 自己会发请求
+    if (this.data.isToday && dateUtil.todayKey() !== this.data.date) {
+      this.setDate(dateUtil.todayKey());
+      return;
+    }
     this.load();
   },
 
@@ -122,17 +159,28 @@ Page({
   },
 
   openAdd() {
-    this.setData({ sheetItem: null, sheetShow: true });
+    this.showSheet(null);
   },
 
   onItemTap(e) {
     const item = this.data.items.find((row) => row.id === e.currentTarget.dataset.id);
     if (!item) return;
+    this.showSheet(item);
+  },
+
+  showSheet(item) {
     this.setData({ sheetItem: item, sheetShow: true });
+    this.setBarHidden(true);
   },
 
   closeSheet() {
     this.setData({ sheetShow: false });
+    this.setBarHidden(false);
+  },
+
+  setBarHidden(hidden) {
+    const bar = this.getTabBar && this.getTabBar();
+    if (bar) bar.setData({ barHidden: hidden });
   },
 
   onSheetSubmit(e) {
@@ -143,7 +191,8 @@ Page({
     const saving = id ? put('/api/transactions/' + id, payload) : post('/api/transactions', payload);
     saving
       .then(() => {
-        this.setData({ busy: false, sheetShow: false });
+        this.setData({ busy: false });
+        this.closeSheet();
         wx.showToast({ title: '已保存', icon: 'success' });
         this.load();
       })
@@ -163,7 +212,8 @@ Page({
         this.setData({ busy: true });
         del('/api/transactions/' + item.id)
           .then(() => {
-            this.setData({ busy: false, sheetShow: false });
+            this.setData({ busy: false });
+            this.closeSheet();
             wx.showToast({ title: '已删除', icon: 'success' });
             this.load();
           })

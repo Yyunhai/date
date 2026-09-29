@@ -7,8 +7,6 @@ Component({
   },
 
   data: {
-    secret: false,
-    revealed: false,
     expanded: false,
     clipped: false,
     time: ''
@@ -19,8 +17,6 @@ Component({
       if (!entry) return;
       const content = entry.content || '';
       this.setData({
-        secret: entry.category === 'SECRET',
-        revealed: false,
         expanded: false,
         clipped: content.length > 66,
         time: entry.updatedAt ? entry.updatedAt.slice(11, 16) : ''
@@ -29,10 +25,6 @@ Component({
   },
 
   methods: {
-    onToggleSecret() {
-      this.setData({ revealed: !this.data.revealed });
-    },
-
     onToggleExpand() {
       this.setData({ expanded: !this.data.expanded });
     },

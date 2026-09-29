@@ -1,4 +1,4 @@
-<view wx:if="{{rendered}}" class="root {{in ? 'in' : ''}}">
+<view wx:if="{{rendered}}" class="root {{closing ? 'closing' : ''}}">
   <view class="mask" bindtap="onClose"></view>
 
   <view class="sheet" catchtap="noop">
@@ -26,8 +26,6 @@
               bindinput="onInput"></textarea>
 
     <view class="meta">
-      <text class="hint" wx:if="{{category === 'SECRET'}}">心事在列表中默认折叠，点开才显示正文</text>
-      <text class="hint" wx:else> </text>
       <text class="count">{{content.length}}/5000</text>
     </view>
 

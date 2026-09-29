@@ -1,44 +1,94 @@
 <view class="page">
-  <view class="hero">
-    <view class="deco d1"></view>
-    <view class="deco d2"></view>
+  <view class="screens {{dragging ? 'dragging' : ''}}"
+        style="transform: translateX({{trackX}}px);"
+        bindtouchstart="onSwipeStart"
+        bindtouchmove="onSwipeMove"
+        bindtouchend="onSwipeEnd"
+        bindtouchcancel="onSwipeEnd">
 
-    <view class="hero-top">
-      <text class="tag">今天</text>
-      <text class="month">{{monthYear}}</text>
-    </view>
+    <view class="slide">
+      <view class="hero">
+        <view class="deco d1"></view>
+        <view class="deco d2"></view>
 
-    <view class="hero-main">
-      <text class="day">{{dayNum}}</text>
-      <view class="hero-side">
-        <text class="week">{{weekday}}</text>
-        <text class="lead">{{loading ? '正在读取' : (entries.length ? '已记录 ' + entries.length + ' 条' : '还是空白的一天')}}</text>
+        <view class="hero-top">
+          <text class="tag">今天</text>
+          <text class="month">{{monthYear}}</text>
+        </view>
+
+        <view class="hero-main">
+          <text class="day">{{dayNum}}</text>
+          <view class="hero-side">
+            <text class="week">{{weekday}}</text>
+            <text class="lead">{{loading ? '正在读取' : (entries.length ? '已记录 ' + entries.length + ' 条' : '还是空白的一天')}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="work-row" bindtap="openWork">
+        <view class="wr-main">
+          <text class="wr-k">今日工时</text>
+          <text class="wr-v {{workMinutes ? 'on' : ''}}">{{workLoading && !workMinutes ? '读取中' : workText}}</text>
+        </view>
+        <text class="wr-go">{{workMinutes ? '修改' : '记一下'}}</text>
+      </view>
+
+      <view class="section-head">
+        <text class="section-title">当天的记录</text>
+        <text class="section-sub">点卡片可修改</text>
+      </view>
+
+      <view class="list" wx:if="{{loading && !entries.length}}">
+        <view class="sk"></view>
+        <view class="sk"></view>
+      </view>
+
+      <view class="list" wx:elif="{{entries.length}}">
+        <entry-card wx:for="{{entries}}" wx:key="id" entry="{{item}}" bind:select="onCardTap" />
+      </view>
+
+      <view class="empty" wx:elif="{{!loading}}">
+        <view class="empty-ring"></view>
+        <text class="empty-title">今天还没有写下任何内容</text>
+        <text class="empty-desc">工作上的进展，或者今天发生的小事</text>
+        <view class="empty-btn" bindtap="openAdd">写第一条</view>
+      </view>
+
+      <view class="swipe-cue" data-index="1" bindtap="switchScreen">
+        <text>左滑查看工时汇总与分析</text>
+        <text class="cue-arrow">›</text>
       </view>
     </view>
+
+    <view class="slide">
+      <view class="w-head">
+        <text class="w-title">工作时长</text>
+        <text class="w-anchor">{{monthYear}} {{dayNum}} 日 · {{weekday}}</text>
+      </view>
+
+      <view class="w-blank" wx:if="{{!workCards.length}}">{{workLoading ? '正在统计…' : '还没有统计'}}</view>
+
+      <view class="w-grid" wx:else>
+        <view class="w-card {{item.key === 'today' ? 'lead' : ''}}"
+              wx:for="{{workCards}}" wx:key="key"
+              data-key="{{item.key}}" bindtap="onRangeTap">
+          <text class="w-k">{{item.label}}</text>
+          <text class="w-v">{{item.text}}</text>
+          <text class="w-s">{{item.sub}}</text>
+        </view>
+      </view>
+
+      <view class="w-tip">工时按天记，和写了什么无关；点「今日」那张卡可以往前翻日期，补录过去某一天的工时。周 / 月 / 年自动累加，本周从周一起算。</view>
+
+      <view class="w-split">
+        <text class="w-split-title">工时分析</text>
+        <text class="w-split-sub">趋势 · 日均 · 最拼的几天</text>
+      </view>
+      <analysis-panel scope="work" date="{{date}}" show="{{screen === 1}}" />
+    </view>
   </view>
 
-  <view class="section-head">
-    <text class="section-title">当天的记录</text>
-    <text class="section-sub">点卡片可修改</text>
-  </view>
-
-  <view class="list" wx:if="{{loading && !entries.length}}">
-    <view class="sk"></view>
-    <view class="sk"></view>
-  </view>
-
-  <view class="list" wx:elif="{{entries.length}}">
-    <entry-card wx:for="{{entries}}" wx:key="id" entry="{{item}}" bind:select="onCardTap" />
-  </view>
-
-  <view class="empty" wx:elif="{{!loading}}">
-    <view class="empty-ring"></view>
-    <text class="empty-title">今天还没有写下任何内容</text>
-    <text class="empty-desc">工作、日记，或者一句不想让别人看到的心事</text>
-    <view class="empty-btn" bindtap="openAdd">写第一条</view>
-  </view>
-
-  <view class="fab" bindtap="openAdd">
+  <view class="fab" wx:if="{{screen === 0}}" bindtap="openAdd">
     <view class="plus"><view class="ph-h"></view><view class="ph-v"></view></view>
   </view>
 
@@ -50,5 +100,10 @@
                 bind:delete="onSheetDelete"
                 bind:close="closeSheet" />
 
-  <bottom-nav active="index" />
+  <work-editor show="{{workShow}}"
+               date="{{date}}"
+               minutes="{{workMinutes}}"
+               busy="{{workBusy}}"
+               bind:submit="onWorkSubmit"
+               bind:close="closeWork" />
 </view>

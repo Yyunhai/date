@@ -1,0 +1,42 @@
+<view wx:if="{{rendered}}" class="root {{closing ? 'closing' : ''}}">
+  <view class="mask" bindtap="onClose"></view>
+
+  <view class="sheet" catchtap="noop">
+    <view class="grabber"></view>
+
+    <view class="head">
+      <text class="title">工作时长</text>
+      <view class="day">
+        <view class="day-btn" bindtap="onPrevDay">‹</view>
+        <picker class="day-pick" mode="date" value="{{dayKey}}" end="{{todayKey}}" bindchange="onPickDate">
+          <view class="day-label">{{dateLabel}}<text class="day-caret">▾</text></view>
+        </picker>
+        <view class="day-btn {{isToday ? 'dis' : ''}}" bindtap="onNextDay">›</view>
+      </view>
+    </view>
+
+    <view class="sub">
+      <text>{{weekday}}</text>
+      <text class="back-today" wx:if="{{!isToday}}" bindtap="backToday">回到今天</text>
+    </view>
+
+    <view class="fields">
+      <input class="field" type="number" value="{{hours}}" maxlength="2" placeholder="0" bindinput="onHours" />
+      <text class="unit">小时</text>
+      <input class="field" type="number" value="{{mins}}" maxlength="2" placeholder="0" bindinput="onMins" />
+      <text class="unit">分</text>
+    </view>
+
+    <view class="meta">
+      <text class="total">{{total}}</text>
+      <text class="link" bindtap="clearDuration">清零</text>
+    </view>
+
+    <view class="hint">改日期就是补录那一天，保存只影响选中的这天</view>
+
+    <view class="actions">
+      <view class="btn ghost" bindtap="onClose">取消</view>
+      <view class="btn primary {{busy ? 'busy' : ''}}" bindtap="onSubmit">{{busy ? '保存中' : '保存'}}</view>
+    </view>
+  </view>
+</view>

@@ -1,4 +1,4 @@
-<view class="bar">
+<view class="bar {{barHidden ? 'hidden' : ''}}">
   <view wx:for="{{items}}" wx:key="page"
         class="item {{active === item.page ? 'on' : ''}}"
         data-page="{{item.page}}" data-url="{{item.url}}" bindtap="onGo">

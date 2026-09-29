@@ -5,7 +5,6 @@
   "backgroundColor": "#f5f4f1",
   "usingComponents": {
     "tx-editor": "/components/tx-editor/tx-editor",
-    "analysis-panel": "/components/analysis-panel/analysis-panel",
-    "bottom-nav": "/components/bottom-nav/bottom-nav"
+    "analysis-panel": "/components/analysis-panel/analysis-panel"
   }
 }

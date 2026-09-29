@@ -20,7 +20,7 @@ Component({
 
   data: {
     rendered: false,
-    in: false,
+    closing: false,
     type: 'EXPENSE',
     amount: '',
     remark: '',
@@ -32,17 +32,16 @@ Component({
       clearTimeout(this._hideTimer);
       if (show) {
         this.fill();
-        this.setData({ rendered: true });
-        this._timer = setTimeout(() => this.setData({ in: true }), 20);
+        // 挂载即由 CSS 动画滑到位，不再等下一帧补 class
+        this.setData({ rendered: true, closing: false });
       } else if (this.data.rendered) {
-        this.setData({ in: false });
-        this._hideTimer = setTimeout(() => this.setData({ rendered: false }), 240);
+        this.setData({ closing: true });
+        this._hideTimer = setTimeout(() => this.setData({ rendered: false, closing: false }), 240);
       }
     }
   },
 
   detached() {
-    clearTimeout(this._timer);
     clearTimeout(this._hideTimer);
   },
 

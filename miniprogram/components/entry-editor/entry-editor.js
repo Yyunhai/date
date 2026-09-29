@@ -1,7 +1,6 @@
 const CATEGORIES = [
   { key: 'WORK', label: '工作', placeholder: '今天推进了什么？' },
-  { key: 'DIARY', label: '日记', placeholder: '今天发生了什么？' },
-  { key: 'SECRET', label: '心事', placeholder: '写下只有你知道的那一句…' }
+  { key: 'DIARY', label: '日记', placeholder: '今天发生了什么？' }
 ];
 
 Component({
@@ -27,7 +26,7 @@ Component({
   data: {
     categories: CATEGORIES,
     rendered: false,
-    in: false,
+    closing: false,
     category: 'WORK',
     content: '',
     placeholder: CATEGORIES[0].placeholder,
@@ -39,17 +38,16 @@ Component({
       clearTimeout(this._hideTimer);
       if (show) {
         this.fill();
-        this.setData({ rendered: true });
-        this._timer = setTimeout(() => this.setData({ in: true }), 20);
+        // 挂载即由 CSS 动画滑到位，不再等下一帧补 class
+        this.setData({ rendered: true, closing: false });
       } else if (this.data.rendered) {
-        this.setData({ in: false });
-        this._hideTimer = setTimeout(() => this.setData({ rendered: false }), 240);
+        this.setData({ closing: true });
+        this._hideTimer = setTimeout(() => this.setData({ rendered: false, closing: false }), 240);
       }
     }
   },
 
   detached() {
-    clearTimeout(this._timer);
     clearTimeout(this._hideTimer);
   },
 

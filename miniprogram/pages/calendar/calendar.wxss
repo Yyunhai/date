@@ -157,10 +157,6 @@
   background: #e8890c;
 }
 
-.m-SECRET {
-  background: #7c4dff;
-}
-
 .sel .md {
   opacity: 0.9;
 }

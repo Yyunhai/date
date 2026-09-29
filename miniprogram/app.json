@@ -4,6 +4,17 @@
     "pages/finance/finance",
     "pages/calendar/calendar"
   ],
+  "tabBar": {
+    "custom": true,
+    "color": "#a3a09b",
+    "selectedColor": "#4a58d8",
+    "backgroundColor": "#ffffff",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "今天" },
+      { "pagePath": "pages/finance/finance", "text": "收支" },
+      { "pagePath": "pages/calendar/calendar", "text": "日历" }
+    ]
+  },
   "window": {
     "backgroundTextStyle": "light",
     "backgroundColor": "#F5F4F1",

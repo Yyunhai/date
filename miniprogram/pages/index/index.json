@@ -6,6 +6,7 @@
   "usingComponents": {
     "entry-card": "/components/entry-card/entry-card",
     "entry-editor": "/components/entry-editor/entry-editor",
-    "bottom-nav": "/components/bottom-nav/bottom-nav"
+    "work-editor": "/components/work-editor/work-editor",
+    "analysis-panel": "/components/analysis-panel/analysis-panel"
   }
 }

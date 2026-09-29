@@ -7,17 +7,10 @@
       <text class="time">{{time}}</text>
     </view>
 
-    <view wx:if="{{secret && !revealed}}" class="masked">
-      <view class="lock"></view>
-      <text class="masked-text">仅自己可见的心事</text>
-      <text class="link" catchtap="onToggleSecret">显示</text>
-    </view>
+    <view class="content {{expanded || !clipped ? 'full' : 'clamp'}}">{{entry.content}}</view>
 
-    <view wx:else class="content {{expanded || !clipped ? 'full' : 'clamp'}}">{{entry.content}}</view>
-
-    <view class="foot" wx:if="{{clipped || secret}}">
-      <text class="link" wx:if="{{clipped}}" catchtap="onToggleExpand">{{expanded ? '收起' : '展开全文'}}</text>
-      <text class="link" wx:if="{{secret}}" catchtap="onToggleSecret">{{revealed ? '隐藏' : '显示'}}</text>
+    <view class="foot" wx:if="{{clipped}}">
+      <text class="link" catchtap="onToggleExpand">{{expanded ? '收起' : '展开全文'}}</text>
     </view>
   </view>
 </view>

@@ -7,10 +7,10 @@
 
   <view class="range-line">
     <text class="range">{{rangeLabel}}</text>
-    <text class="range-count" wx:if="{{loaded && !failed}}">{{recordCount}} 笔记录</text>
+    <text class="range-count" wx:if="{{loaded && !failed}}">{{countLabel}}</text>
   </view>
 
-  <view class="sum">
+  <view class="sum" wx:if="{{scope !== 'work'}}">
     <view class="sum-cell">
       <text class="k">收入</text>
       <text class="v">{{totals.income}}</text>
@@ -32,13 +32,41 @@
     </view>
   </view>
 
+  <view class="sum" wx:else>
+    <view class="sum-cell">
+      <text class="k">{{scopeName}}总工时</text>
+      <view class="v-line"><text class="v">{{work.total}}</text><text class="u">小时</text></view>
+      <text class="d muted" wx:if="{{work.totalChange}}">{{work.totalUp ? '↑' : '↓'}} {{work.totalChange}}</text>
+      <text class="d muted" wx:elif="{{work.totalNew}}">较{{pastName}}新增</text>
+      <text class="d muted" wx:else>与{{pastName}}持平</text>
+    </view>
+    <view class="sum-cell">
+      <text class="k">日均工时</text>
+      <view class="v-line"><text class="v">{{work.avg}}</text><text class="u">小时</text></view>
+      <text class="d muted">{{work.avgNote}}</text>
+    </view>
+    <view class="sum-cell">
+      <text class="k">有记录</text>
+      <view class="v-line"><text class="v">{{work.days}}</text><text class="u">天</text></view>
+      <text class="d muted">{{work.daysChange}}</text>
+    </view>
+  </view>
+
   <view class="card">
     <view class="card-head">
-      <text class="card-title">收支分布</text>
+      <text class="card-title">{{scope === 'work' ? '工时趋势' : '收支分布'}}</text>
       <text class="card-sub">峰值 {{maxLabel}}</text>
     </view>
 
-    <view class="chart">
+    <view class="chart" wx:if="{{scope === 'work'}}">
+      <view class="col" wx:for="{{buckets}}" wx:key="index">
+        <view class="bars">
+          <view class="bar dur {{item.weekend ? 'wk' : ''}}" style="height:{{item.height}}%"></view>
+        </view>
+        <text class="tick">{{item.tick ? item.label : ''}}</text>
+      </view>
+    </view>
+    <view class="chart" wx:else>
       <view class="col" wx:for="{{buckets}}" wx:key="index">
         <view class="bars">
           <view class="bar inc" style="height:{{item.incomeH}}%"></view>
@@ -48,13 +76,56 @@
       </view>
     </view>
 
-    <view class="legend">
+    <!-- 年粒度一格是一整月，标工作日/周末没有意义 -->
+    <view class="legend" wx:if="{{scope === 'work' && granularity !== 'year'}}">
+      <view class="lg"><view class="sw dur"></view><text>工作日</text></view>
+      <view class="lg"><view class="sw wk"></view><text>周末</text></view>
+    </view>
+    <view class="legend" wx:elif="{{scope !== 'work'}}">
       <view class="lg"><view class="sw inc"></view><text>收入</text></view>
       <view class="lg"><view class="sw exp"></view><text>支出</text></view>
     </view>
   </view>
 
-  <view class="card" wx:if="{{topExpenses.length}}">
+  <view class="card" wx:if="{{scope === 'work' && topDays.length}}">
+    <view class="card-head">
+      <text class="card-title">最拼的几天</text>
+      <text class="card-sub">前 {{topDays.length}} 天</text>
+    </view>
+    <view class="top-row" wx:for="{{topDays}}" wx:key="date">
+      <view class="top-line">
+        <text class="top-name">{{item.label}}</text>
+        <text class="top-val">{{item.text}}</text>
+      </view>
+      <view class="track"><view class="fill" style="width:{{item.width}}%"></view></view>
+      <text class="top-sub">占{{scopeName}} {{item.share}}%</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{scope === 'work' && hasData}}">
+    <view class="card-head">
+      <text class="card-title">工作日 / 周末</text>
+      <text class="card-sub">{{split.note}}</text>
+    </view>
+    <view class="top-row">
+      <view class="top-line">
+        <text class="top-name">工作日</text>
+        <text class="top-val">{{split.workday.text}}</text>
+      </view>
+      <view class="track"><view class="fill" style="width:{{split.workday.width}}%"></view></view>
+      <text class="top-sub">{{split.workday.days}} 天有记 · 平均 {{split.workday.avg}}</text>
+    </view>
+    <view class="top-row">
+      <view class="top-line">
+        <text class="top-name">周末</text>
+        <text class="top-val">{{split.weekend.text}}</text>
+      </view>
+      <view class="track"><view class="fill wk" style="width:{{split.weekend.width}}%"></view></view>
+      <text class="top-sub">{{split.weekend.days}} 天有记 · 平均 {{split.weekend.avg}}</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{scope !== 'work' && topExpenses.length}}">
     <view class="card-head">
       <text class="card-title">支出构成</text>
       <text class="card-sub">前 {{topExpenses.length}} 项</text>
@@ -74,5 +145,7 @@
     <text>读不到分析服务，确认 8081 已启动</text>
     <view class="retry" bindtap="reload">重试</view>
   </view>
-  <view class="state" wx:elif="{{loaded && !hasData}}">{{scopeName}}还没有记账，滑到左边先记一笔</view>
+  <view class="state" wx:elif="{{loaded && !hasData}}">
+    {{scope === 'work' ? scopeName + '还没有记过工时' : scopeName + '还没有记账，滑到左边先记一笔'}}
+  </view>
 </view>

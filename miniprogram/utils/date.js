@@ -24,6 +24,13 @@ function weekdayLabel(key) {
   return '星期' + WEEKDAYS[(new Date(year, month - 1, day).getDay() + 6) % 7];
 }
 
+/** 按天偏移，交给 Date 处理跨月、跨年、闰年 */
+function shiftDay(key, delta) {
+  const { year, month, day } = fromKey(key);
+  const moved = new Date(year, month - 1, day + delta);
+  return toKey(moved.getFullYear(), moved.getMonth() + 1, moved.getDate());
+}
+
 function dayDiffFromToday(key) {
   const { year, month, day } = fromKey(key);
   const target = new Date(year, month - 1, day);
@@ -71,14 +78,27 @@ function buildMonthCells(year, month) {
   return cells;
 }
 
+/** 200 -> 3 小时 20 分，40 -> 40 分，空或 0 返回空串 */
+function durationLabel(minutes) {
+  const total = Math.floor(Number(minutes) || 0);
+  if (total <= 0) return '';
+  const h = Math.floor(total / 60);
+  const m = total % 60;
+  if (!h) return m + ' 分';
+  if (!m) return h + ' 小时';
+  return h + ' 小时 ' + m + ' 分';
+}
+
 module.exports = {
   WEEKDAYS,
   pad,
   todayKey,
   fromKey,
   toKey,
+  shiftDay,
   weekdayLabel,
   friendlyLabel,
   dayDiffFromToday,
+  durationLabel,
   buildMonthCells
 };

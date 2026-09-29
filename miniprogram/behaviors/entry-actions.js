@@ -24,15 +24,26 @@ module.exports = Behavior({
     },
 
     openAdd() {
-      this.setData({ sheetEntry: null, sheetShow: true });
+      this.showSheet(null);
     },
 
     onCardTap(e) {
-      this.setData({ sheetEntry: e.detail.entry, sheetShow: true });
+      this.showSheet(e.detail.entry);
+    },
+
+    showSheet(entry) {
+      this.setData({ sheetEntry: entry, sheetShow: true });
+      this.setBarHidden(true);
     },
 
     closeSheet() {
       this.setData({ sheetShow: false });
+      this.setBarHidden(false);
+    },
+
+    setBarHidden(hidden) {
+      const bar = this.getTabBar && this.getTabBar();
+      if (bar) bar.setData({ barHidden: hidden });
     },
 
     onSheetSubmit(e) {
@@ -44,7 +55,8 @@ module.exports = Behavior({
 
       saving
         .then(() => {
-          this.setData({ busy: false, sheetShow: false });
+          this.setData({ busy: false });
+          this.closeSheet();
           wx.showToast({ title: '已保存', icon: 'success' });
           this.loadEntries();
           if (this.onEntriesChanged) this.onEntriesChanged();
@@ -66,7 +78,8 @@ module.exports = Behavior({
           this.setData({ busy: true });
           del('/api/entries/' + entry.id)
             .then(() => {
-              this.setData({ busy: false, sheetShow: false });
+              this.setData({ busy: false });
+              this.closeSheet();
               wx.showToast({ title: '已删除', icon: 'success' });
               this.loadEntries();
               if (this.onEntriesChanged) this.onEntriesChanged();

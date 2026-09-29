@@ -57,40 +57,6 @@
   overflow: hidden;
 }
 
-.masked {
-  display: flex;
-  align-items: center;
-  min-height: 46rpx;
-}
-
-.masked-text {
-  flex: 1;
-  font-size: 27rpx;
-  color: #a3a09b;
-  margin-left: 14rpx;
-}
-
-.lock {
-  position: relative;
-  width: 22rpx;
-  height: 17rpx;
-  border: 2rpx solid currentColor;
-  border-radius: 5rpx;
-  color: #7c4dff;
-}
-
-.lock::after {
-  content: '';
-  position: absolute;
-  left: 3rpx;
-  top: -10rpx;
-  width: 12rpx;
-  height: 12rpx;
-  border: 2rpx solid currentColor;
-  border-bottom-color: transparent;
-  border-radius: 50%;
-}
-
 .foot {
   display: flex;
   align-items: center;
@@ -127,17 +93,4 @@
 
 .cat-DIARY .link {
   color: #e8890c;
-}
-
-.cat-SECRET .rail,
-.cat-SECRET .chip {
-  background: #7c4dff;
-}
-
-.cat-SECRET .chip {
-  color: #ffffff;
-}
-
-.cat-SECRET .link {
-  color: #7c4dff;
 }

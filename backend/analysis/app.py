@@ -174,6 +174,15 @@ async def http_error(request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content={"status": exc.status_code, "message": exc.detail})
 
 
+def parse_anchor(date_str: str, granularity: str) -> date:
+    if granularity not in GRANULARITIES:
+        raise HTTPException(status_code=400, detail="未知的分析粒度: " + granularity)
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else date.today()
+    except ValueError:
+        raise HTTPException(status_code=400, detail="日期格式应为 YYYY-MM-DD")
+
+
 @app.get("/ping")
 def ping():
     return {"status": "ok", "service": "date-analytics"}
@@ -184,13 +193,7 @@ def analytics(
     date_str: str = Query(default="", alias="date"),
     granularity: str = Query(default="month"),
 ):
-    if granularity not in GRANULARITIES:
-        raise HTTPException(status_code=400, detail="未知的分析粒度: " + granularity)
-    try:
-        anchor = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else date.today()
-    except ValueError:
-        raise HTTPException(status_code=400, detail="日期格式应为 YYYY-MM-DD")
-
+    anchor = parse_anchor(date_str, granularity)
     start, end, label = period(anchor, granularity)
     prev_anchor = shift(anchor, granularity, -1)
     prev_start, prev_end, prev_label = period(prev_anchor, granularity)
@@ -230,6 +233,135 @@ def analytics(
         "recordCount": 0 if frame.empty else int(
             ((frame["tx_date"] >= start) & (frame["tx_date"] <= end)).sum()
         ),
+    }
+
+
+def fetch_work(start: date, end: date) -> pd.DataFrame:
+    sql = (
+        "SELECT work_date, minutes FROM daily_work_log "
+        "WHERE user_id = %s AND work_date BETWEEN %s AND %s"
+    )
+    with connect() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(sql, (USER_ID, start.isoformat(), end.isoformat()))
+            rows = cursor.fetchall()
+    frame = pd.DataFrame(rows, columns=["work_date", "minutes"])
+    if frame.empty:
+        return frame
+    frame["work_date"] = pd.to_datetime(frame["work_date"]).dt.date
+    frame["minutes"] = frame["minutes"].map(lambda value: int(value or 0))
+    return frame
+
+
+def work_slice(frame: pd.DataFrame, start: date, end: date) -> pd.DataFrame:
+    if frame.empty:
+        return frame
+    return frame[(frame["work_date"] >= start) & (frame["work_date"] <= end)]
+
+
+def work_totals(frame: pd.DataFrame, start: date, end: date):
+    window = work_slice(frame, start, end)
+    if window.empty:
+        return {"minutes": 0, "days": 0}
+    recorded = window[window["minutes"] > 0]
+    return {"minutes": int(recorded["minutes"].sum()), "days": int(len(recorded))}
+
+
+def elapsed_days(start: date, end: date) -> int:
+    """当期还没走完时，日均只按已经过去的天数算，否则本月日均永远偏低。"""
+    return max(1, (min(end, date.today()) - start).days + 1)
+
+
+def work_buckets(frame: pd.DataFrame, start: date, end: date, granularity: str):
+    buckets = []
+    for bucket in bucket_keys(start, end, granularity):
+        window = work_slice(frame, bucket["start"], bucket["end"])
+        minutes = int(window["minutes"].sum()) if not window.empty else 0
+        buckets.append(
+            {
+                "label": bucket["label"],
+                "sub": bucket.get("sub", ""),
+                "minutes": minutes,
+                # 年粒度时一格是一整月，再标周末没有意义
+                "weekend": None if granularity == "year" else bucket["start"].weekday() >= 5,
+            }
+        )
+    return buckets
+
+
+def top_work_days(frame: pd.DataFrame, start: date, end: date, limit: int = 5):
+    window = work_slice(frame, start, end)
+    if not window.empty:
+        window = window[window["minutes"] > 0]
+    if window.empty:
+        return []
+    total = int(window["minutes"].sum())
+    top = window.sort_values(["minutes", "work_date"], ascending=[False, False]).head(limit)
+    return [
+        {
+            "date": row["work_date"].isoformat(),
+            "label": "{}月{}日".format(row["work_date"].month, row["work_date"].day),
+            "weekday": "周" + WEEK_NAMES[row["work_date"].weekday()],
+            "minutes": int(row["minutes"]),
+            "share": round(int(row["minutes"]) / total * 100, 1) if total else 0.0,
+        }
+        for _, row in top.iterrows()
+    ]
+
+
+def weekday_split(frame: pd.DataFrame, start: date, end: date):
+    """工作日 = 周一到周五，按自然周而不是法定节假日。"""
+    window = work_slice(frame, start, end)
+    result = {}
+    for key, weekend in (("workday", False), ("weekend", True)):
+        if window.empty:
+            result[key] = {"minutes": 0, "days": 0}
+            continue
+        part = window[
+            (window["work_date"].map(lambda day: day.weekday() >= 5) == weekend)
+            & (window["minutes"] > 0)
+        ]
+        result[key] = {"minutes": int(part["minutes"].sum()), "days": int(len(part))}
+    return result
+
+
+@app.get("/analytics/work")
+def analytics_work(
+    date_str: str = Query(default="", alias="date"),
+    granularity: str = Query(default="month"),
+):
+    anchor = parse_anchor(date_str, granularity)
+
+    start, end, label = period(anchor, granularity)
+    prev_anchor = shift(anchor, granularity, -1)
+    prev_start, prev_end, prev_label = period(prev_anchor, granularity)
+
+    frame = fetch_work(prev_start, end)
+    totals = work_totals(frame, start, end)
+    previous = work_totals(frame, prev_start, prev_end)
+
+    days = elapsed_days(start, end)
+    avg = int(round(totals["minutes"] / days))
+    prev_avg = int(round(previous["minutes"] / ((prev_end - prev_start).days + 1)))
+    buckets = work_buckets(frame, start, end, granularity)
+
+    return {
+        "granularity": granularity,
+        "anchor": anchor.isoformat(),
+        "range": {"start": start.isoformat(), "end": end.isoformat(), "label": label},
+        "previousRange": {"start": prev_start.isoformat(), "end": prev_end.isoformat(), "label": prev_label},
+        "totals": totals,
+        "previousTotals": previous,
+        "avgPerDay": avg,
+        "elapsedDays": days,
+        "change": {
+            "minutes": change_pct(totals["minutes"], previous["minutes"]),
+            "avg": change_pct(avg, prev_avg),
+        },
+        "buckets": buckets,
+        "maxBucket": max([b["minutes"] for b in buckets] or [0]) or 0,
+        "topDays": top_work_days(frame, start, end),
+        "weekdaySplit": weekday_split(frame, start, end),
     }
 
 

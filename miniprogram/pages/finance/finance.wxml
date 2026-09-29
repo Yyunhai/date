@@ -19,11 +19,20 @@
         <view class="deco d2"></view>
 
         <view class="hero-top">
-          <text class="tag">{{dateLabel}}</text>
-          <text class="week">{{weekday}}</text>
+          <view class="date-pill">
+            <view class="dp-btn" bindtap="onPrevDay">‹</view>
+            <picker class="dp-pick" mode="date" value="{{date}}" bindchange="onPickDate">
+              <view class="dp-label">{{dateLabel}}<text class="dp-caret">▾</text></view>
+            </picker>
+            <view class="dp-btn" bindtap="onNextDay">›</view>
+          </view>
+          <view class="hero-side">
+            <text class="week">{{weekday}}</text>
+            <text class="back-today" wx:if="{{!isToday}}" bindtap="backToday">回到今天</text>
+          </view>
         </view>
 
-        <text class="h-label">本日结余</text>
+        <text class="h-label">{{dateLabel}}结余</text>
         <text class="h-balance">{{balance}}</text>
 
         <view class="h-row">
@@ -40,7 +49,7 @@
       </view>
 
       <view class="section-head">
-        <text class="section-title">当天的流水</text>
+        <text class="section-title">{{dateLabel}}的流水</text>
         <text class="section-sub" wx:if="{{!loading}}">{{items.length}} 笔</text>
       </view>
 
@@ -63,9 +72,9 @@
 
       <view class="empty" wx:elif="{{!loading}}">
         <view class="empty-ring"></view>
-        <text class="empty-title">今天还没有记账</text>
-        <text class="empty-desc">一笔收入或支出都可以记下来</text>
-        <view class="empty-btn" bindtap="openAdd">记第一笔</view>
+        <text class="empty-title">{{dateLabel}}还没有记账</text>
+        <text class="empty-desc">收入或支出都能补记，往期的也一样</text>
+        <view class="empty-btn" bindtap="openAdd">记一笔</view>
       </view>
 
       <view class="swipe-cue" data-index="1" bindtap="switchScreen">
@@ -91,5 +100,4 @@
              bind:delete="onSheetDelete"
              bind:close="closeSheet" />
 
-  <bottom-nav active="finance" />
 </view>

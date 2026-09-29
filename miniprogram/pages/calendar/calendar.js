@@ -29,6 +29,8 @@ Page({
   },
 
   onShow() {
+    const bar = this.getTabBar && this.getTabBar();
+    if (bar) bar.setData({ active: 'calendar' });
     this.loadMonth();
     this.loadEntries();
   },
@@ -59,7 +61,6 @@ Page({
       if (stat) {
         if (stat.work) marks.push('WORK');
         if (stat.diary) marks.push('DIARY');
-        if (stat.secret) marks.push('SECRET');
       }
       return Object.assign({}, cell, {
         marks,

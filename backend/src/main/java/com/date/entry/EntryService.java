@@ -65,17 +65,16 @@ public class EntryService {
 
         Map<LocalDate, int[]> grouped = new LinkedHashMap<>();
         for (Entry entry : repository.findByUserIdAndEntryDateBetweenOrderByEntryDateAscCreatedAtAsc(userId, start, end)) {
-            int[] counts = grouped.computeIfAbsent(entry.getEntryDate(), key -> new int[4]);
+            int[] counts = grouped.computeIfAbsent(entry.getEntryDate(), key -> new int[3]);
             counts[0]++;
             switch (entry.getCategory()) {
                 case WORK -> counts[1]++;
                 case DIARY -> counts[2]++;
-                case SECRET -> counts[3]++;
             }
         }
 
         List<DayStat> result = new ArrayList<>();
-        grouped.forEach((date, counts) -> result.add(new DayStat(date, counts[0], counts[1], counts[2], counts[3])));
+        grouped.forEach((date, counts) -> result.add(new DayStat(date, counts[0], counts[1], counts[2])));
         result.sort(Comparator.comparing(DayStat::date));
         return result;
     }
